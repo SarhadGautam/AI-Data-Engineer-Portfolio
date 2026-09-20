@@ -36,7 +36,7 @@ I'm an AI Data Engineer with professional experience in data engineering and a g
 ## Repository Structure
 
 ```
-AI-Engineer-Portfolio/
+AI-Data-Engineer-Portfolio/
 │
 ├── .github/
 │   └── workflows/                   ← CI/CD pipelines (paths updated per project)
