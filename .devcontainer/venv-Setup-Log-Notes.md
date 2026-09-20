@@ -357,3 +357,98 @@ python --version && echo "Python ✅" || echo "Python ❌"
 |----------|-----------|
 | `airflow --version` | `airflow version` |
 
+
+---
+
+## Step 7 — Git LFS Error When Pushing to GitHub
+
+**Command run:**
+```bash
+git push origin main
+```
+
+**Error:**
+```
+This repository is configured for Git LFS but 'git-lfs' 
+was not found on your path.
+error: failed to push some refs to 
+'https://github.com/SarhadGautam/AI-Data-Engineer-Portfolio'
+```
+
+**Root Cause:**  
+The GitHub repo has Git LFS (Large File Storage) enabled but 
+`git-lfs` is not installed inside the Codespace by default.
+Git LFS is an extension that stores large files (datasets, models)
+outside the main repo to keep it lightweight.
+
+---
+
+### What is Git LFS?
+
+Git LFS (Large File Storage) is a Git extension that:
+- Stores large files (CSVs, ML models, images) outside the repo
+- Keeps your repo size small and fast
+- Replaces large files with lightweight text pointers in Git
+- Downloads actual file content only when needed
+
+We don't need it right now but it must be installed to push successfully
+since the repo was created with LFS enabled.
+
+---
+
+### Fix — Install git-lfs in Codespace
+
+**Step 1 — Add Git LFS package repository:**
+```bash
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+```
+
+**Explanation:**
+- `curl -s` → downloads a file from the internet silently (no progress shown)
+- `https://packagecloud.io/...script.deb.sh` → GitHub's official script that 
+  adds the Git LFS package repository to your system
+- `| sudo bash` → pipes the downloaded script directly into bash to execute 
+  it as administrator
+- **In simple terms:** "Download and run GitHub's script that tells our 
+  system WHERE to find the git-lfs package"
+
+**Step 2 — Install git-lfs:**
+```bash
+sudo apt-get install git-lfs -y
+```
+
+**Explanation:**
+- `sudo` → run as administrator
+- `apt-get install` → Ubuntu's package installer (like pip but for system tools)
+- `git-lfs` → the package we want to install
+- `-y` → automatically say yes to all prompts
+- **In simple terms:** "Now that the system knows where to find git-lfs, 
+  go ahead and install it"
+
+**Step 3 — Initialise Git LFS:**
+```bash
+git lfs install
+```
+
+**Explanation:**
+- Activates Git LFS for your user account globally
+- **In simple terms:** "Tell Git to use git-lfs from now on"
+
+**Step 4 — Push again:**
+```bash
+git push origin main
+```
+
+---
+
+### Permanent Fix — Add git-lfs to setup.sh
+
+To avoid this error on every new Codespace, add git-lfs installation
+to `.devcontainer/setup.sh`:
+
+```bash
+# Install git-lfs
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+sudo apt-get install git-lfs -y
+git lfs install
+```
